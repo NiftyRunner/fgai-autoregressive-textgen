@@ -13,7 +13,11 @@ jupyter==1.1.1
 nbconvert==7.17.2
 ipykernel==7.4.0
 
-# Document Generation & Utilities
+# Document & PDF Generation
 python-docx==1.2.0
+docx2pdf==0.1.8
+pywin32==312
+
+# Network & Utilities
 requests==2.34.2
 tqdm==4.70.1

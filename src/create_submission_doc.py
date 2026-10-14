@@ -1,10 +1,11 @@
 import os
+import sys
 import docx
 from docx.shared import Inches, Pt, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.enum.table import WD_TABLE_ALIGNMENT, WD_ALIGN_VERTICAL
-from docx.oxml import OxmlElement, parse_xml
-from docx.oxml.ns import nsdecls, qn
+from docx.enum.table import WD_TABLE_ALIGNMENT
+from docx.oxml import parse_xml
+from docx.oxml.ns import nsdecls
 
 def set_cell_background(cell, fill_hex):
     tcPr = cell._tc.get_or_add_tcPr()
@@ -24,22 +25,23 @@ def set_cell_margins(cell, top=100, bottom=100, left=150, right=150):
     tcPr.append(tcMar)
 
 def create_submission_document(
-    doc_path="submission/YourName_RegNum_FGAI_Assignment2.docx"
+    doc_path="submission/ParthVerma_230953436_FGAI_Assignment2.docx",
+    student_name="Parth Verma",
+    reg_num="230953436",
+    github_link="https://github.com/NiftyRunner/fgai-autoregressive-textgen"
 ):
     os.makedirs(os.path.dirname(doc_path), exist_ok=True)
     doc = docx.Document()
     
     # Page setup: Standard 1 inch margins
-    sections = doc.sections
-    for section in sections:
+    for section in doc.sections:
         section.top_margin = Inches(1.0)
         section.bottom_margin = Inches(1.0)
         section.left_margin = Inches(1.0)
         section.right_margin = Inches(1.0)
         
     # Styles
-    styles = doc.styles
-    normal_style = styles["Normal"]
+    normal_style = doc.styles["Normal"]
     normal_style.font.name = "Calibri"
     normal_style.font.size = Pt(11)
     normal_style.font.color.rgb = RGBColor(0x22, 0x22, 0x22)
@@ -50,7 +52,7 @@ def create_submission_document(
     title_p = doc.add_paragraph()
     title_p.paragraph_format.space_before = Pt(0)
     title_p.paragraph_format.space_after = Pt(4)
-    title_run = title_p.add_run("Foundations of Generative AI (ICT4403) — Assignment 2")
+    title_run = title_p.add_run("Foundations of Generative AI (ICT4403) - Assignment 2")
     title_run.font.size = Pt(18)
     title_run.font.bold = True
     title_run.font.color.rgb = RGBColor(0x1a, 0x36, 0x5d) # Deep navy
@@ -68,11 +70,11 @@ def create_submission_document(
     meta_table.autofit = False
     
     meta_data = [
-        ("Student Name:", "<<YourName>>"),
-        ("Registration Number:", "<<RegNum>>"),
-        ("Course & Assignment:", "Foundations of Generative AI (ICT4403) — Assignment 2"),
+        ("Student Name:", student_name),
+        ("Registration Number:", reg_num),
+        ("Course & Assignment:", "Foundations of Generative AI (ICT4403) - Assignment 2"),
         ("Dataset & Source:", "The Adventures of Sherlock Holmes (Project Gutenberg EBook #1661)\nhttps://www.gutenberg.org/cache/epub/1661/pg1661.txt"),
-        ("GitHub Repository Link:", "<<GitHubLink or \"TO BE ADDED\">>")
+        ("GitHub Repository Link:", github_link)
     ]
     
     col_widths = [Inches(2.0), Inches(4.5)]
@@ -93,7 +95,10 @@ def create_submission_document(
         p_v.paragraph_format.space_after = Pt(2)
         run_v = p_v.add_run(v)
         run_v.font.size = Pt(10)
-        
+        if "http" in v:
+            run_v.font.color.rgb = RGBColor(0x1d, 0x4e, 0xd8)
+            run_v.font.underline = True
+            
         set_cell_background(cell_k, "F0F4F8")
         set_cell_background(cell_v, "FAFCFF")
         set_cell_margins(cell_k, top=80, bottom=80, left=120, right=120)
@@ -335,8 +340,27 @@ def create_submission_document(
         "3. Recurrent Bottleneck: Sequential hidden-state compression limits memory span compared to modern Transformer self-attention."
     )
     
-    doc.save(doc_path)
-    print(f"Successfully generated submission document at: {doc_path}")
+    # Save attempt
+    saved_path = doc_path
+    try:
+        doc.save(doc_path)
+        print(f"Successfully generated submission document at: {doc_path}")
+    except PermissionError:
+        alt_path = doc_path.replace(".docx", "_completed.docx")
+        doc.save(alt_path)
+        saved_path = alt_path
+        print(f"Target file {doc_path} was locked. Saved completed document at: {alt_path}")
+        
+    # Attempt PDF conversion using docx2pdf
+    pdf_path = os.path.splitext(saved_path)[0] + ".pdf"
+    target_pdf = os.path.join(os.path.dirname(doc_path), "ParthVerma_230953436_FGAI_Assignment2.pdf")
+    try:
+        from docx2pdf import convert
+        print(f"Converting {saved_path} to PDF via docx2pdf...")
+        convert(saved_path, target_pdf)
+        print(f"Successfully converted to PDF at: {target_pdf}")
+    except Exception as e:
+        print(f"Could not convert directly to PDF: {e}")
 
 if __name__ == "__main__":
     create_submission_document()

@@ -140,7 +140,7 @@ Prerequisites: Python 3.12, NVIDIA GPU with CUDA 12.6 support.
 
 ```powershell
 # 1. Clone repository and navigate to folder
-git clone <YOUR_REPO_URL>
+git clone https://github.com/NiftyRunner/fgai-autoregressive-textgen.git
 cd fgai-autoregressive-textgen
 
 # 2. Activate virtual environment (if creating fresh)
@@ -171,7 +171,7 @@ python -m venv .venv
 If running on Colab instead of a local GPU:
 ```python
 # In a Colab cell:
-!git clone <YOUR_REPO_URL>
+!git clone https://github.com/NiftyRunner/fgai-autoregressive-textgen.git
 %cd fgai-autoregressive-textgen
 !pip install -r requirements.txt
 !python src/run_experiments.py --epochs 15 --batch_size 128

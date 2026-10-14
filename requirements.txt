@@ -1,0 +1,19 @@
+# Deep Learning Framework (CUDA 12.6 enabled)
+torch==2.14.1+cu126
+
+# Numerical Computing and Data Manipulation
+numpy==2.5.4
+pandas==3.0.6
+
+# Visualization
+matplotlib==3.11.2
+
+# Interactive Notebook & Execution Engine
+jupyter==1.1.1
+nbconvert==7.17.2
+ipykernel==7.4.0
+
+# Document Generation & Utilities
+python-docx==1.2.0
+requests==2.34.2
+tqdm==4.70.1
